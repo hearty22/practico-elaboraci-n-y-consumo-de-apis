@@ -1,63 +1,63 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance } from "fastify";
 import {
   CreateListSchema,
   ParamsSchema,
   UpdateListSchema,
-} from '@/models/list.schema.js';
+} from "@/handlers/lists/list.schema.js";
 import {
   createListHandler,
   deleteListHandler,
   getListByIdHandler,
   getListsHandler,
   updateListHandler,
-} from '@/handlers/list.handler.js';
+} from "@/handlers/lists/list.handler.js";
 
 export async function listRoutes(app: FastifyInstance) {
   // Create a new list
   app.post(
-    '/',
+    "/",
     {
       schema: {
         body: CreateListSchema,
       },
     },
-    createListHandler
+    createListHandler,
   );
 
   // Get all lists
-  app.get('/', getListsHandler);
+  app.get("/", getListsHandler);
 
   // Get a single list by ID
   app.get(
-    '/:id',
+    "/:id",
     {
       schema: {
         params: ParamsSchema,
       },
     },
-    getListByIdHandler
+    getListByIdHandler,
   );
 
   // Update a list by ID
   app.put(
-    '/:id',
+    "/:id",
     {
       schema: {
         body: UpdateListSchema,
         params: ParamsSchema,
       },
     },
-    updateListHandler
+    updateListHandler,
   );
 
   // Delete a list by ID
   app.delete(
-    '/:id',
+    "/:id",
     {
       schema: {
         params: ParamsSchema,
       },
     },
-    deleteListHandler
+    deleteListHandler,
   );
 }
