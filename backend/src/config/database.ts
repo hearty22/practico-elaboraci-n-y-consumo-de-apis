@@ -14,24 +14,29 @@ const mongoConnection = {
 
 export const dbConnect = async () => {
   if (mongoConnection.isConnected) {
-    console.log("Using existing database connection.");
     return;
   }
 
   if (mongoose.connections.length > 0) {
     mongoConnection.isConnected = mongoose.connections[0].readyState;
     if (mongoConnection.isConnected === 1) {
-      console.log("Using existing database connection.");
       return;
     }
 
     await mongoose.disconnect();
   }
 
+  const connectionString = process.env.TEST_DATABASE_URL || MONGO_URI;
+
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(connectionString);
     mongoConnection.isConnected = 1;
-    console.log("Database connected");
+
+    // Forma segura de loguear la conexión sin exponer credenciales
+    const safeLogUri = connectionString.includes("@")
+      ? connectionString.split("@")[1]
+      : connectionString;
+    console.log(`Database connected to: ${safeLogUri}`);
   } catch (error) {
     console.error("Database connection failed:", error);
   }

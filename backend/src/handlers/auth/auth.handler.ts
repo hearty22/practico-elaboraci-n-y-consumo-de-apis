@@ -8,16 +8,6 @@ import {
 import { z } from "zod";
 import { comparePass, hashPass } from "@/utils/hashPass.js";
 
-type RegisterRequest = FastifyRequest<{
-  Body: z.infer<typeof RegisterSchema>;
-}>;
-type LoginRequest = FastifyRequest<{
-  Body: z.infer<typeof LoginSchema>;
-}>;
-type UpdateProfileRequest = FastifyRequest<{
-  Body: z.infer<typeof UpdateProfileSchema>;
-}>;
-
 /**
  *
  * @description Handles user registration
@@ -27,7 +17,7 @@ type UpdateProfileRequest = FastifyRequest<{
  */
 
 export const RegisterHandler = async (
-  request: RegisterRequest,
+  request: FastifyRequest<{ Body: z.infer<typeof RegisterSchema> }>,
   reply: FastifyReply,
 ) => {
   try {
@@ -64,20 +54,20 @@ export const RegisterHandler = async (
  * @param reply
  */
 export const LoginHandler = async (
-  request: LoginRequest,
+  request: FastifyRequest<{ Body: z.infer<typeof LoginSchema> }>,
   reply: FastifyReply,
 ) => {
   try {
     const { email, password } = request.body;
-    const user = await UserModel.find({
+    const user = await UserModel.findOne({
       email: email,
     });
-    if (!user) {
+    if (!user)
       return reply.code(401).send({
         msg: "invalid credentials",
         ok: false,
       });
-    }
+
     const hashedPass = user.password;
     const passMatch = await comparePass(password, hashedPass);
     if (!passMatch) {
@@ -86,5 +76,79 @@ export const LoginHandler = async (
         ok: false,
       });
     }
-  } catch (e) {}
+    const payload = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const token = await reply.jwtSign(payload);
+    reply.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENVIROMENT === "production",
+      sameSite: "none",
+    });
+    return reply.code(200).send({ msg: "login success", ok: true });
+  } catch (e) {
+    return reply.code(500).send({ msg: "Error logging in", ok: false });
+  }
+};
+export const LogoutHandler = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  try {
+    reply.clearCookie("token", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENVIROMENT === "production",
+      sameSite: "none",
+    });
+    return reply.code(200).send({ msg: "logout success", ok: true });
+  } catch (error) {
+    return reply.code(500).send({
+      msg: "Error logging out",
+      ok: false,
+    });
+  }
+};
+export const UpdateProfileHandler = async (
+  request: FastifyRequest<{ Body: z.infer<typeof UpdateProfileSchema> }>,
+  reply: FastifyReply,
+) => {
+  try {
+    const userId = request.user.id;
+    const { email, username, password } = request.body;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return reply.code(404).send({
+        msg: "User not found",
+        ok: false,
+      });
+    }
+    if (password) {
+      const hashedPassword = await hashPass(password);
+      user.password = hashedPassword;
+    }
+    if (email) {
+      user.email = email;
+    }
+    if (username) {
+      user.username = username;
+    }
+    await user.save();
+    return reply.code(200).send({
+      msg: "User updated succesfully",
+      ok: true,
+      data: {
+        user: user,
+      },
+    });
+  } catch (error) {
+    return reply.code(500).send({
+      msg: "Error updating user",
+      ok: false,
+    });
+  }
 };
