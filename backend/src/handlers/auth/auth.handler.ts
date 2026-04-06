@@ -145,9 +145,31 @@ export const UpdateProfileHandler = async (
         user: user,
       },
     });
-  } catch (error) {
+  } catch (e) {
     return reply.code(500).send({
       msg: "Error updating user",
+      ok: false,
+    });
+  }
+};
+
+export const GetProfileHandler = async (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => {
+  try {
+    const user = request.user;
+    return reply.code(200).send({
+      msg: "user logged",
+      ok: true,
+      data: {
+        user: user,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return reply.code(500).send({
+      msg: "Error getting the user",
       ok: false,
     });
   }

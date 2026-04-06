@@ -4,6 +4,7 @@ import {
   LoginHandler,
   LogoutHandler,
   UpdateProfileHandler,
+  GetProfileHandler,
 } from "./auth.handler.js";
 import {
   RegisterSchema,
@@ -53,5 +54,12 @@ export const authRoutes = async function (app: FastifyInstance) {
     // @ts-ignore - Temporarily ignoring this due to a persistent type inference issue.
     // We will come back to this after writing tests.
     UpdateProfileHandler,
+  );
+  app.get(
+    "/me",
+    {
+      preHandler: isAuth,
+    },
+    GetProfileHandler,
   );
 };

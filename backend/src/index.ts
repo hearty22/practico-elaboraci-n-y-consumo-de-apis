@@ -1,4 +1,5 @@
 import Fastify, { FastifyInstance } from "fastify";
+import cors from "@fastify/cors";
 import "dotenv/config";
 // CAMBIO 1: Importar dbConnect (y corregir la extensión si es necesario)
 import { dbConnect } from "@/config/database.js";
@@ -17,7 +18,9 @@ const PORT: number = Number(process.env.PORT) || 3000;
 
 export async function build(opts = {}): Promise<FastifyInstance> {
   const fastify = Fastify(opts).withTypeProvider<ZodTypeProvider>();
-
+  fastify.register(cors, {
+    origin: "*",
+  });
   fastify.register(fastifyCookie);
   fastify.register(fastifyJwt, {
     secret: process.env.JWT_SECRET || "supersecret", // Usar un valor por defecto para tests
