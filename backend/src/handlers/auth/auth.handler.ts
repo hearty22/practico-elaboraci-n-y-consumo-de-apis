@@ -87,7 +87,7 @@ export const LoginHandler = async (
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENVIROMENT === "production",
-      sameSite: "none",
+      sameSite: "strict",
     });
     return reply.code(200).send({ msg: "login success", ok: true });
   } catch (e) {
@@ -103,7 +103,7 @@ export const LogoutHandler = async (
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENVIROMENT === "production",
-      sameSite: "none",
+      sameSite: "strict",
     });
     return reply.code(200).send({ msg: "logout success", ok: true });
   } catch (error) {
