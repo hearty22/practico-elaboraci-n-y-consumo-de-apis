@@ -13,6 +13,11 @@ export interface AuthContextType {
   isAuth: boolean;
   user: User | null;
   isLoading: boolean;
+  checkAuthStatus: () => Promise<void>;
+  // We keep the setters for flexibility, though they might not be used directly
+  setIsAuth: (isAuth: boolean) => void;
+  setUser: (user: User | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 //create and export the context. the hook will need it.
 //eslint-disable-next-line react-refresh/only-export-components
@@ -26,30 +31,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const userData = await verifyAuth();
-        if (userData) {
-          setUser(userData);
-          setIsAuth(true);
-        } else {
-          setIsAuth(false);
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Authentication check failed:", error);
+  const checkAuthStatus = async () => {
+    try {
+      const response = await verifyAuth();
+      if (response && response.ok && response.data.user) {
+        setUser(response.data.user);
+        setIsAuth(true);
+      } else {
         setIsAuth(false);
         setUser(null);
-      } finally {
-        setIsLoading(false);
       }
-    };
-    checkAuth();
+    } catch (error) {
+      console.error("Authentication check failed:", error);
+      setIsAuth(false);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuthStatus();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuth, user, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuth,
+        isLoading,
+        checkAuthStatus,
+        setUser,
+        setIsAuth,
+        setIsLoading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

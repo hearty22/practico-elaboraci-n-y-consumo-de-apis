@@ -4,24 +4,24 @@ import { RegisterPage } from "../pages/RegisterPage";
 import { TasksPage } from "../pages/TasksPage";
 import { useAuth } from "../hooks/useAuth";
 export const AppRouter = () => {
-  const { isAuth, isLoading } = useAuth();
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { isAuth } = useAuth();
+
   return (
-    <Routes>
-      {isAuth ? (
-        <>
-          <Route path="/tasks" element={<TasksPage />} />
-          <Route path="/*" element={<Navigate to="/tasks" />} />
-        </>
-      ) : (
-        <>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </>
-      )}
-    </Routes>
+    <>
+      <Routes>
+        {isAuth ? (
+          <>
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/*" element={<Navigate to="/tasks" />} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/*" element={<Navigate to="/login" />} />
+          </>
+        )}
+      </Routes>
+    </>
   );
 };
