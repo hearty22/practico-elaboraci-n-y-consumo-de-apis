@@ -39,7 +39,7 @@ Sigue estas instrucciones para tener el proyecto funcionando en tu máquina loca
 
 ```bash
 git clone <url-de-tu-repositorio>
-cd Practicas
+cd proyecto
 ```
 
 ### 2. Configurar el Backend
