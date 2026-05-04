@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
@@ -29,6 +29,13 @@ export const TasksPage = () => {
   const [tasksLoading, setTasksLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [tasks, searchTerm]);
 
   const fetchTasks = useCallback(async () => {
     if (isAuth) {
@@ -127,6 +134,14 @@ export const TasksPage = () => {
             <h1 className="text-xl font-bold text-slate-100">
               Tareas de {user?.username}
             </h1>
+            <div>
+              <input
+                placeholder="busqueda de tareas..."
+                className="bg-white/[0.05] border border-white/[0.1] text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              ></input>
+            </div>
             <div className="flex items-center gap-4">
               <button
                 onClick={handleOpenCreateModal}
@@ -146,9 +161,9 @@ export const TasksPage = () => {
         <main className="container mx-auto px-6 py-8">
           {tasksLoading ? (
             <Loading />
-          ) : tasks.length > 0 ? (
+          ) : filteredTasks.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <div
                   key={task._id}
                   className="bg-white/[0.06] p-6 rounded-lg shadow-lg border border-white/[0.1] flex flex-col"
@@ -208,17 +223,23 @@ export const TasksPage = () => {
           ) : (
             <div className="text-center py-16">
               <h2 className="text-2xl font-bold text-slate-400 mb-4">
-                No tienes tareas pendientes
+                {searchTerm
+                  ? "No se encontraron tareas"
+                  : "No tienes tareas pendientes"}
               </h2>
               <p className="text-slate-500">
-                ¡Crea tu primera tarea para empezar!
+                {searchTerm
+                  ? "Probá con otro término de búsqueda"
+                  : "¡Crea tu primera tarea para empezar!"}
               </p>
-              <button
-                onClick={handleOpenCreateModal}
-                className="mt-6 px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-semibold transition-colors"
-              >
-                Crear mi primera tarea
-              </button>
+              {!searchTerm && (
+                <button
+                  onClick={handleOpenCreateModal}
+                  className="mt-6 px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-semibold transition-colors"
+                >
+                  Crear mi primera tarea
+                </button>
+              )}
             </div>
           )}
         </main>
