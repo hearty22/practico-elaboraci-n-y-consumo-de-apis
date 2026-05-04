@@ -1,54 +1,52 @@
 {
-  "hash": "b84a4c11",
-  "configHash": "ecaea162",
-  "lockfileHash": "9b8aef37",
-  "browserHash": "35a38bdb",
+  "hash": "cd1aea2b",
+  "configHash": "ac41357e",
+  "lockfileHash": "0772175d",
+  "browserHash": "bc611f7c",
   "optimized": {
-    "@material-tailwind/react": {
-      "src": "../../node_modules/@material-tailwind/react/index.js",
-      "file": "@material-tailwind_react.js",
-      "fileHash": "7fe5fca4",
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "a78ee19e",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "3a4451d5",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "7f72afee",
+      "fileHash": "8c467f37",
       "needsInterop": true
     },
-    "react-icons/fa": {
-      "src": "../../node_modules/react-icons/fa/index.mjs",
-      "file": "react-icons_fa.js",
-      "fileHash": "e054d88d",
-      "needsInterop": false
+    "@material-tailwind/react": {
+      "src": "../../node_modules/@material-tailwind/react/index.js",
+      "file": "@material-tailwind_react.js",
+      "fileHash": "bb828071",
+      "needsInterop": true
     },
     "react-router-dom": {
       "src": "../../node_modules/react-router-dom/dist/index.mjs",
       "file": "react-router-dom.js",
-      "fileHash": "f2eabf7b",
+      "fileHash": "256456af",
       "needsInterop": false
     },
-    "react": {
-      "src": "../../node_modules/react/index.js",
-      "file": "react.js",
-      "fileHash": "cfbf638a",
-      "needsInterop": true
-    },
-    "react/jsx-dev-runtime": {
-      "src": "../../node_modules/react/jsx-dev-runtime.js",
-      "file": "react_jsx-dev-runtime.js",
-      "fileHash": "d2faed44",
-      "needsInterop": true
+    "react-icons/fa": {
+      "src": "../../node_modules/react-icons/fa/index.mjs",
+      "file": "react-icons_fa.js",
+      "fileHash": "8b98857b",
+      "needsInterop": false
     }
   },
   "chunks": {
-    "react-DQX-MDaH": {
-      "file": "react-DQX-MDaH.js",
-      "isDynamicEntry": false
+    "chunk-YUNTBJI6": {
+      "file": "chunk-YUNTBJI6.js"
     },
-    "react-dom-Cnpce0yH": {
-      "file": "react-dom-Cnpce0yH.js",
-      "isDynamicEntry": false
+    "chunk-45FXRYJS": {
+      "file": "chunk-45FXRYJS.js"
     }
   }
 }
