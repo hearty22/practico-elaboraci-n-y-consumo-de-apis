@@ -12,7 +12,6 @@ import {
 } from "../api/api";
 import { TaskFormModal } from "../components/TaskFormModal";
 
-// Define the shape of a single task
 interface Task {
   _id: string;
   title: string;
@@ -63,7 +62,7 @@ export const TasksPage = () => {
     fetchTasks();
   }, [fetchTasks]);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logout();
       await checkAuthStatus();
@@ -71,56 +70,61 @@ export const TasksPage = () => {
       console.error("Failed to logout:", error);
       await checkAuthStatus();
     }
-  };
+  }, [checkAuthStatus]);
 
-  const handleOpenCreateModal = () => {
+  const handleOpenCreateModal = useCallback(() => {
     setEditingTask(null);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleOpenEditModal = (task: Task) => {
+  const handleOpenEditModal = useCallback((task: Task) => {
     setEditingTask(task);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setEditingTask(null);
-  };
+  }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (window.confirm("¿Estás seguro de que quieres eliminar esta tarea?")) {
       try {
         await deleteTask(id);
-        await fetchTasks(); // Refetch tasks to update the list
+        await fetchTasks();
       } catch (error) {
         console.error("Failed to delete task:", error);
       }
     }
-  };
+  }, [fetchTasks]);
 
-  const handleToggleComplete = async (task: Task) => {
+  const handleToggleComplete = useCallback(async (task: Task) => {
     try {
       await updateTask(task._id, { is_complete: !task.is_complete });
       await fetchTasks();
     } catch (error) {
       console.error("Failed to toggle task completion:", error);
     }
-  };
+  }, [fetchTasks]);
+
+  const currentTaskAction = useCallback(
+    (data: { title: string; description?: string }) => {
+      if (editingTask) {
+        return updateTask(editingTask._id, data);
+      }
+      return createTask(data);
+    },
+    [editingTask],
+  );
 
   if (isLoading) {
     return <Loading />;
   }
 
-  const currentTaskAction = editingTask
-    ? (data: { title: string; description?: string }) =>
-        updateTask(editingTask._id, data)
-    : createTask;
-
   return (
     <>
       <TaskFormModal
-        key={editingTask?._id || Date.now().toString()}
+        key={editingTask?._id || "create-task"}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         taskAction={currentTaskAction}

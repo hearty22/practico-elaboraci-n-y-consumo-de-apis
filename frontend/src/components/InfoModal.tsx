@@ -6,6 +6,7 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import { memo } from "react";
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ interface InfoModalProps {
   };
 }
 
-export const InfoModal = ({
+export const InfoModal = memo(({
   isOpen,
   onClose,
   title,
@@ -48,4 +49,4 @@ export const InfoModal = ({
       </DialogFooter>
     </Dialog>
   );
-};
+});

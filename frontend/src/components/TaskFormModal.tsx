@@ -7,7 +7,7 @@ import {
   Input,
   Textarea,
 } from "@material-tailwind/react";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 interface TaskFormModalProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ const INITIAL_STATE = {
   description: "",
 };
 
-export const TaskFormModal = ({
+export const TaskFormModal = memo(({
   isOpen,
   onClose,
   onTaskAction,
@@ -105,4 +105,4 @@ export const TaskFormModal = ({
       </form>
     </Dialog>
   );
-};
+});
